@@ -18,8 +18,8 @@ class UserSeeder extends Seeder
         User::factory()->count(4)->create();
 
         User::factory()->create([
-            'name' => 'drfoxg',
-            'email' => 'drfoxg@gmail.com',
+            'name' => config('app.admin_name'),
+            'email' => config('app.admin_email'),
             'email_verified_at' => Carbon::now(),
             'is_admin' => 1,
             'password' => Hash::make(config('app.admin_password')),

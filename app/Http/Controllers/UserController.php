@@ -45,7 +45,6 @@ class UserController extends Controller
     {
 
         $this->authorize('create', User::class);
-        //dd('store');
 
         $validated = $request->validate([
             'name' => 'required|string|min:3|max:255',
@@ -53,16 +52,6 @@ class UserController extends Controller
             'password' => 'required|string|min:8|max:50',
             'is_admin' => 'required_if:yes,on,1',
         ]);
-
-        /*
-        User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            //'password' => Hash::make($validated['password']),
-            'password' => Hash::make($validated['password']),
-            'is_admin' => $validated['is_admin'],
-        ]);
-        */
 
         User::create($request->except('_token'));
 
@@ -95,7 +84,6 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $this->authorize('update', $user);
-        //dump($user);
 
         $validated = $request->validate([
             'name' => 'required|string|min:3|max:255',
@@ -103,27 +91,17 @@ class UserController extends Controller
             'is_admin' => 'required_if:yes,on,1',
         ]);
 
-        //dump($validated['is_admin']);
-
         if (isset($validated['is_admin'])) {
             $isAdmin = 'on';
         } else {
             $isAdmin = 0;
         }
 
-
-        //dump($isAdmin);
-
-        //$user->update($request->all());
-
         $user->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'is_admin' => $isAdmin,
         ]);
-
-
-        //dump($user);
 
         return redirect()->route('dashboard.index')->withSuccess('Данные Пользователя были обновлены.');
     }

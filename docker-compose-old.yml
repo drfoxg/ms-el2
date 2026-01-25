@@ -1,0 +1,107 @@
+version: '3.7'
+services:
+
+    #PHP Service
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: ms-el2/php
+        container_name: app-ms-el2
+        restart: unless-stopped
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+            - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+            - ./certbot/www:/var/www/certbot/:ro
+            - ./certbot/conf/:/etc/nginx/ssl/:ro
+        networks:
+            - app-network
+        ports:
+            # smtp tls
+            - 217.114.43.138:587:587
+            - 217.114.43.138:2222:22
+            # vite node.js server
+            - 217.114.43.138:5173:5173
+
+    #Nginx Service
+    webserver:
+        image: nginx:alpine
+        container_name: webserver-ms-el2
+        restart: unless-stopped
+        tty: true
+        ports:
+            - 217.114.43.138:80:80
+            - 217.114.43.138:443:443
+        volumes:
+            - ./:/var/www
+            - ./nginx/conf.d/:/etc/nginx/conf.d/
+            - ./certbot/www:/var/www/certbot/:ro
+            - ./certbot/conf/:/etc/nginx/ssl/:ro
+        networks:
+            - app-network
+
+    #MySQL Service
+    db:
+        image: mysql:8.0.34
+        container_name: db-ms-el2
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "33006:3306"
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+            APP_DB_USERNAME: ${DB_USERNAME}
+            APP_DB_PASSWORD: ${DB_PASSWORD}
+            TZ: Europe/Moscow
+        volumes:
+            - dbdata:/var/lib/mysql
+            - ./mysql/my.cnf:/etc/mysql/my.cnf
+        networks:
+            - app-network
+
+    #phpMyAdmin container
+    phpmyadmin:
+        # Use phpmyadmin/phpmyadmin:latest image
+        image: phpmyadmin/phpmyadmin:latest
+        container_name: phpmyadmin-ms-el2
+        # Connect to "drfoxg-net" network, as defined below
+        networks:
+            - app-network
+        # Map port 8033 on the host to port 80 inside the container
+        # Syntax is: "HOST_PORT:CONTAINER_PORT"
+        ports:
+            - 217.114.43.138:8033:80
+        # Pass a list of environment variables to the container
+        environment:
+            PMA_HOST: db
+            UPLOAD_LIMIT: 256M
+            MAX_EXECUTION_TIME: 3000
+        # Wait for "mysql" container to start first
+        depends_on:
+            - db
+
+    certbot:
+        image: certbot/certbot:latest
+        volumes:
+            - ./certbot/www/:/var/www/certbot/:rw
+            - ./certbot/conf/:/etc/letsencrypt/:rw
+        networks:
+            - app-network
+
+#Docker Networks
+networks:
+    app-network:
+        driver: bridge
+
+#Volumes
+volumes:
+    dbdata:
+        driver: local

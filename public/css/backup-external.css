@@ -1,0 +1,32 @@
+thead input,
+tfoot input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+}
+
+thead, tfoot {
+    display: table-row-group;
+}
+
+.paginate_button > .page-link {
+    color:#18202B !important;
+}
+
+.previous > .page-link {
+    background-color: #EAF2FF;
+}
+
+
+.table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th {
+   background-color: #EAF2FF;
+}
+
+
+.table,
+.table-striped,
+.table-borderd
+{
+    --bs-table-striped-bg: #85d1ee;
+}

@@ -1,8 +1,7 @@
-version: '3.7'
+version: "3.7"
 services:
-
     #PHP Service
-    app:
+    ms-el2:
         build:
             context: .
             dockerfile: Dockerfile
@@ -15,93 +14,70 @@ services:
             SERVICE_TAGS: dev
         working_dir: /var/www
         volumes:
+            - /tmp:/tmp # for php-cs-fixer
             - ./:/var/www
             - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
-            - ./certbot/www:/var/www/certbot/:ro
-            - ./certbot/conf/:/etc/nginx/ssl/:ro
         networks:
-            - app-network
+            - app-ms-el2-network
+            - nginxproxyman
+            - sqldev-backend
         ports:
             # smtp tls
-            - "587:587"
-            - "2222:22"
+            #- 217.114.43.138:587:587
+            #- 217.114.43.138:2222:22
             # vite node.js server
-            - "5173:5173"
+            - 217.114.43.138:5173:5173
 
     #Nginx Service
-    webserver:
+    ms-el2-webserver:
         image: nginx:alpine
         container_name: webserver-ms-el2
         restart: unless-stopped
         tty: true
-        ports:
-            - "80:80"
-            - "443:443"
+        #ports:
+        #    - 217.114.43.138:80:80
+        #    - 217.114.43.138:443:443
         volumes:
             - ./:/var/www
             - ./nginx/conf.d/:/etc/nginx/conf.d/
-            - ./certbot/www:/var/www/certbot/:ro
-            - ./certbot/conf/:/etc/nginx/ssl/:ro
         networks:
-            - app-network
+            - app-ms-el2-network
+            - nginxproxyman
 
     #MySQL Service
-    db:
-        image: mysql:8.0.34
-        container_name: db-ms-el2
-        restart: unless-stopped
-        tty: true
-        ports:
-            - "33006:3306"
-        environment:
-            MYSQL_DATABASE: ${DB_DATABASE}
-            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-            SERVICE_TAGS: dev
-            SERVICE_NAME: mysql
-            APP_DB_USERNAME: ${DB_USERNAME}
-            APP_DB_PASSWORD: ${DB_PASSWORD}
-            TZ: Europe/Moscow
-        volumes:
-            - dbdata:/var/lib/mysql
-            - ./mysql/my.cnf:/etc/mysql/my.cnf
-        networks:
-            - app-network
-
-    #phpMyAdmin container
-    phpmyadmin:
-        # Use phpmyadmin/phpmyadmin:latest image
-        image: phpmyadmin/phpmyadmin:latest
-        container_name: phpmyadmin-ms-el2
-        # Connect to "drfoxg-net" network, as defined below
-        networks:
-            - app-network
-        # Map port 8033 on the host to port 80 inside the container
-        # Syntax is: "HOST_PORT:CONTAINER_PORT"
-        ports:
-            - "8033:80"
-        # Pass a list of environment variables to the container
-        environment:
-            PMA_HOST: db
-            UPLOAD_LIMIT: 256M
-            MAX_EXECUTION_TIME: 3000
-        # Wait for "mysql" container to start first
-        depends_on:
-            - db
-
-    certbot:
-        image: certbot/certbot:latest
-        volumes:
-            - ./certbot/www/:/var/www/certbot/:rw
-            - ./certbot/conf/:/etc/letsencrypt/:rw
-        networks:
-            - app-network
+    # db-ms-el2:
+    #     image: mysql:8.0.34
+    #     container_name: db-ms-el2
+    #     restart: unless-stopped
+    #     tty: true
+    #     ports:
+    #         - 127.0.0.1:33356:3306
+    #     environment:
+    #         MYSQL_DATABASE: ${DB_DATABASE}
+    #         MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    #         SERVICE_TAGS: dev
+    #         SERVICE_NAME: mysql
+    #         APP_DB_USERNAME: ${DB_USERNAME}
+    #         APP_DB_PASSWORD: ${DB_PASSWORD}
+    #         TZ: Europe/Moscow
+    #     volumes:
+    #         - dbdata-ms-el2:/var/lib/mysql
+    #         - ./mysql/my.cnf:/etc/mysql/my.cnf
+    #     networks:
+    #         - app-ms-el2-network
 
 #Docker Networks
 networks:
-    app-network:
+    app-ms-el2-network:
         driver: bridge
+    nginxproxyman:
+        external: true
+        name: nginxproxyman
+    sqldev-backend:
+        external: true
+        name: sqldev-backend
 
 #Volumes
 volumes:
-    dbdata:
+    dbdata-ms-el2:
         driver: local

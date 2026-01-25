@@ -2,10 +2,13 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "guzzlehttp/guzzle": "^7.2",
         "kaltura/api-client-library": "^19.4",
         "laravel-lang/locale-list": "^1.1",
@@ -16,10 +19,12 @@
         "opcodesio/log-viewer": "^3.1"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.1",
         "fakerphp/faker": "^1.9.1",
         "laravel-lang/attributes": "^2.2",
         "laravel-lang/http-statuses": "^3.2",
-        "laravel-lang/lang": "^12.17",
+        "laravel-lang/lang": "^15.2",
+        "friendsofphp/php-cs-fixer": "^3.92",
         "laravel/breeze": "^1.26",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
@@ -46,16 +51,27 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:models --nowrite"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan lang:update",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:models --nowrite",
+            "@php artisan ide-helper:meta"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "ide-helper": [
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:models --nowrite",
+            "@php artisan ide-helper:meta"
         ]
     },
     "extra": {

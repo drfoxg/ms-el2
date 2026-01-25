@@ -5,6 +5,38 @@ tfoot input {
     box-sizing: border-box;
 }
 
-thead, tfoot {
+thead,
+tfoot {
     display: table-row-group;
+}
+
+.paginate_button>.page-link {
+    color: #18202B !important;
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th {
+    background-color: #EAF2FF;
+}
+
+
+.table,
+.table-striped,
+.table-borderd {
+    --bs-table-striped-bg: #85d1ee;
+}
+
+.active>.page-link,
+.page-link.active {
+    background-color: #C2DBFF;
+    border-color: #C2DBFF;
+}
+
+.pagination .page-link:focus {
+    box-shadow: none;
+}
+
+.pagination .next>.page-link:focus,
+.pagination .previous>.page-link:focus {
+    background-color: white;
 }

@@ -7,9 +7,7 @@ use App\Models\Vendor;
 use App\Models\Manufacturer;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
-
 use Maatwebsite\Excel\Facades\Excel;
-
 use App\Exports;
 use App\Imports;
 
@@ -64,8 +62,6 @@ class WarehouseController extends Controller
             'stock_quantity' => 'required|integer|min:0',
             'comment' => 'required',
         ]);
-
-        //dd($request->input());
 
         Warehouse::create($request->except('_token'));
 
@@ -132,7 +128,7 @@ class WarehouseController extends Controller
     {
         \DB::table('warehouses')->truncate();
 
-        (new Warehouse)->query()->forceDelete();
+        (new Warehouse())->query()->forceDelete();
 
         return redirect()->route('warehouse.index')->withSuccess('Все позиции были удалены успешно.');
     }
@@ -142,10 +138,11 @@ class WarehouseController extends Controller
      * @param Request $request
      * @return type
      */
-    public function tmpdownload(Request $request) {
+    public function tmpdownload(Request $request)
+    {
         $fileName = 'import_template.xlsx';
 
-        return Excel::download(new Exports\CommonExport(new Warehouse), $fileName);
+        return Excel::download(new Exports\CommonExport(new Warehouse()), $fileName);
     }
 
     /**
@@ -175,7 +172,6 @@ class WarehouseController extends Controller
 
         $inputFields = [
             'excel' => 'required|file|mimetypes:application/zip,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel|max:50000',
-            //'excel' => 'string',
         ];
 
         $data = $request->validate($inputFields);
@@ -183,18 +179,10 @@ class WarehouseController extends Controller
         $imports = collect([]);
         $result = Excel::import(new Imports\WarehouseImport($imports), $data['excel']);
 
-
-        //dump($imports);
-        //dd($result);
-
-        //foreach (array_chunk($importRows, Imports\WarehouseImport::getChunkSize()/10) as $chunk) {
-        foreach (array_chunk($imports->toArray(), Imports\WarehouseImport::getChunkSize()/10) as $chunk) {
+        foreach (array_chunk($imports->toArray(), Imports\WarehouseImport::getChunkSize() / 10) as $chunk) {
             $warehouse->insert($chunk);
         }
 
         return redirect()->route('warehouse.index');
-
-        //return 1;
     }
 }
-

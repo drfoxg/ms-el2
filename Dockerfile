@@ -1,16 +1,16 @@
-FROM php:8.2.10-fpm
+FROM php:8.3-fpm
 
-# Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/
+# Copy composer.lock
+#COPY composer.lock /var/www/
 
 # Set working directory
 WORKDIR /var/www
 
-
-
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
+    libssl-dev \
+    pkg-config \
     libpng-dev \
     libxml2-dev \
     libzip-dev \
@@ -25,12 +25,21 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    software-properties-common \
+    apt-transport-https \
+    ca-certificates \
+    gnupg \
+    gnupg2 \
+    gpg \
+    lsb-release \
     mc \
     net-tools \
     iputils-ping \
     apt-utils \
-    openssh-server
+    nodejs \
+    npm \
+    && npm install -g npm@latest \
+    && node --version \
+    && npm --version
 
 # Locale
 ENV TZ=Europe/Moscow
@@ -45,26 +54,34 @@ ENV LANGUAGE ru_RU:ru
 ENV LC_LANG ru_RU.UTF-8
 ENV LC_ALL ru_RU.UTF-8
 
-#npm
-#RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
-#    . ~/.bashrc && \
-#    nvm install v18.18.0 && \
-#    nvm use v18.18.0 && \
-#    npm install npm -g
+# Node.js (новый способ без software-properties-common, убрали в Debian 12)
+# RUN mkdir -p /etc/apt/keyrings \
+#     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+#         | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+#     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] \
+#         https://deb.nodesource.com/node_18.x nodistro main" \
+#         | tee /etc/apt/sources.list.d/nodesource.list \
+#     && apt-get update \
+#     && apt-get install -y nodejs \
+#     && npm install -g npm
 
-RUN curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh && \
-    bash /tmp/nodesource_setup.sh && \
-    apt install nodejs && \
-    npm install npm -g
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+        pdo_mysql \
+        mbstring \
+        zip \
+        exif \
+        pcntl \
+        gd \
+        bcmath \
+        sockets
+
+# Install Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
-#RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
-RUN docker-php-ext-configure gd
-RUN docker-php-ext-install gd
 
 # Install Redis Extension
 #RUN apk add autoconf && pecl install -o -f redis \
