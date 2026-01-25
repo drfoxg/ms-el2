@@ -6,6 +6,7 @@
 /storage/*.key
 /vendor
 .env
+.env.local
 .env.backup
 .env.production
 .phpunit.result.cache
@@ -17,3 +18,15 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Security
+/letsencrypt/
+
+# IDE helpers
+/_ide_helper.php
+/_ide_helper_models.php
+/.phpstorm.meta.php
+
+# Code style tools
+/.php-cs-fixer.dist.php
+/.prettierignore
