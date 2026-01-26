@@ -7,7 +7,6 @@ use App\Http\Controllers\ManufacturerController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\UserController;
-
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,11 +24,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('infop', function () {
+        phpinfo();
+    })->name('infop');
 });
 
-Route::get('infop', function () {
-    phpinfo();
-})->name('infop');
 
 Route::get('/clear-cache', function () {
     $clearCache = Artisan::call('cache:clear');
@@ -51,7 +50,8 @@ Route::controller(UserController::class)->group(function () {
     Route::get('dashboard/{user}/edit', 'edit')->name('dashboard.edit')->middleware('can:update,user');
     Route::put('dashboard/{user}', 'update')->name('dashboard.update')->middleware('can:update,user');
     Route::post('dashboard', 'store')->name('dashboard.store')->middleware('can:create,App\Models\User');
-    Route::delete('dashboard/{user}', 'destroy')->name('dashboard.destroy')->middleware('can:delete,user');;
+    Route::delete('dashboard/{user}', 'destroy')->name('dashboard.destroy')->middleware('can:delete,user');
+    ;
 })->middleware(['auth', 'verified']);
 
 Route::resource('vendors', VendorController::class)->names('vendor');

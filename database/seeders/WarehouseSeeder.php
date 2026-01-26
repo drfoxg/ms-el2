@@ -20,7 +20,40 @@ class WarehouseSeeder extends Seeder
         \DB::statement("LOCK TABLES {$tablePrefix}{$table} WRITE;");
         \DB::statement("SET FOREIGN_KEY_CHECKS=0;");
         \DB::statement("TRUNCATE {$tablePrefix}{$table};");
-        \DB::statement("INSERT INTO {$tablePrefix}{$table} VALUES (1, '0217.250MXP', 1, 1, 20, 'Просто коммент', '2023-09-28 17:40:47', '2023-10-23 17:40:47'), (2, '0217001.MXP', 1, 1, 30, 'Просто коммент 1', '2023-10-23 17:40:47', '2023-09-28 17:40:47'), (3, '0603CS-36NXJLW', 2, 2, 1330, 'Просто коммент 2', '2023-10-23 17:40:47', '2023-09-28 17:40:47');");
+
+        \DB::statement("
+                INSERT INTO {$tablePrefix}{$table}
+                (
+                    id,
+                    category_id,
+                    part_number,
+                    name,
+                    price,
+                    in_stock,
+                    rating,
+                    manufacturer_id,
+                    vendor_id,
+                    stock_quantity,
+                    comment,
+                    created_at,
+                    updated_at
+                )
+                VALUES
+
+                -- Резисторы
+                (1, 2, 'R-TH-10K-1%', 'Резистор 10K 1%', 2.50, 1, 4.5, 3, 1, 500, 'Резистор выводной', NOW(), NOW()),
+                (2, 2, 'R-TH-1K-5%',  'Резистор 1K 5%',  1.90, 1, 4.2, 3, 2, 300, 'Резистор выводной', NOW(), NOW()),
+
+                -- Чип-резисторы (дочерняя категория)
+                (3, 4, '0603-10K-1%',   'Чип резистор 0603 10K', 0.15, 1, 4.8, 3, 1, 1200, 'SMD резистор', NOW(), NOW()),
+                (4, 4, '0805-4K7-1%',   'Чип резистор 0805 4.7K', 0.18, 1, 4.6, 3, 2, 800,  'SMD резистор', NOW(), NOW()),
+                (5, 4, '1206-100R-5%',  'Чип резистор 1206 100R', 0.22, 1, 4.3, 1, 1, 600,  'SMD резистор', NOW(), NOW()),
+
+                -- Конденсаторы
+                (6, 3, 'C-MLCC-100NF-50V', 'Конденсатор 100nF 50V', 0.30, 1, 4.9, 4, 1, 2000, 'Керамический MLCC', NOW(), NOW()),
+                (7, 3, 'C-MLCC-10UF-16V',  'Конденсатор 10uF 16V',  0.45, 1, 4.7, 4, 2, 1500, 'Керамический MLCC', NOW(), NOW())
+            ");
+
         \DB::statement("SET FOREIGN_KEY_CHECKS=1;");
         \DB::statement("UNLOCK TABLES;");
     }

@@ -49,10 +49,14 @@
                                     <tr>
                                         <th scope="col" class="px-6 py-4">#</th>
                                         <th scope="col" class="px-6 py-4">Парт номер</th>
+                                        <th scope="col" class="px-6 py-4">Название</th>
+                                        <th scope="col" class="px-6 py-4">Цена</th>
+                                        <th scope="col" class="px-6 py-4">Наличие</th>
+                                        <th scope="col" class="px-6 py-4">Количество</th>
+                                        <th scope="col" class="px-6 py-4">Рейтинг</th>
                                         <th scope="col" class="px-6 py-4">Производитель</th>
                                         <th scope="col" class="px-6 py-4">Поставщик</th>
-                                        <th scope="col" class="px-6 py-4">Количество</th>
-                                        <th scope="col" class="px-6 py-4">Комментарий</th>
+                                        {{-- <th scope="col" class="px-6 py-4">Комментарий</th> --}}
                                         @auth
                                         <th scope="col" class="px-6 py-4">Действия</th>
                                         @endauth
@@ -63,10 +67,14 @@
                                     <tr class="border-b transition duration-300 ease-in-out hover:bg-orange-100 dark:border-neutral-500 dark:hover:bg-neutral-600">
                                         <th class="whitespace-nowrap px-6 py-4 font-medium" scope="row">{{ $tag->id }}</th>
                                         <td class="whitespace-nowrap px-6 py-4">{{ $tag->part_number }}</td>
-                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->manufacturer->name }}</td>
-                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->vendor->name }}</td>
+                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->name }}</td>
+                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->price_for_display }}</td>
+                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->in_stock ? __('Yes') : __('No')}}</td>
                                         <td class="whitespace-nowrap px-6 py-4">{{ $tag->stock_quantity }}</td>
-                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->comment }}</td>
+                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->rating_for_display }}</td>
+                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->manufacturer->name ?? '-'}}</td>
+                                        <td class="whitespace-nowrap px-6 py-4">{{ $tag->vendor->name ?? '-'}}</td>
+                                        {{-- <td class="whitespace-nowrap px-6 py-4">{{ $tag->comment }}</td> --}}
                                         @auth
                                         <td class="whitespace-nowrap px-6 py-4">
                                             <div class="flex">

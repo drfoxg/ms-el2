@@ -13,87 +13,164 @@
                     <form class="w-full xl:w-1/2" action="{{ route('warehouse.update', $warehouse->id) }}" method="POST">
                         @csrf
                         @method('put')
+
+                        {{-- Категория --}}
                         <div class="w-full join join-vertical">
-                            <label class="form-control" for="part_name">
+                            <label class="form-control" for="category_id">
+                                <div class="label">
+                                    <span class="label-text">Категория</span>
+                                </div>
+                                <select class="select-bordered" name="category_id">
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            {{ $warehouse->category_id === $category->id ? 'selected' : '' }}>
+                                            {!! str_repeat('&mdash; ', $category->depth) !!}{{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </label>
+                            @error('category_id')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Парт номер --}}
+                        <div class="w-full join join-vertical">
+                            <label class="form-control" for="part_number">
                                 <div class="label">
                                     <span class="label-text">Парт номер</span>
                                 </div>
-                                <input type="text" name="part_number" id="part_number" class="input-bordered" value="{{ $warehouse->part_number }}">
+                                <input type="text" name="part_number" id="part_number" class="input-bordered" value="{{ old('part_number', $warehouse->part_number) }}">
                             </label>
-
-                            @if ($errors->has('part_number'))
-                            <div role="alert" class="alert alert-error py-2 rounded-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                <span>{{ $errors->first('part_number') }}</span>
-                            </div>
-                            @endif
+                            @error('part_number')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
                         </div>
+
+                        {{-- Имя компонента --}}
                         <div class="w-full join join-vertical">
-                            <label class="form-control" for="manufacturer_name">
+                            <label class="form-control" for="name">
+                                <div class="label">
+                                    <span class="label-text">Имя компонента</span>
+                                </div>
+                                <input type="text" name="name" id="name" class="input-bordered" value="{{ old('name', $warehouse->name) }}">
+                            </label>
+                            @error('name')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Цена --}}
+                        <div class="w-full join join-vertical">
+                            <label class="form-control" for="price">
+                                <div class="label">
+                                    <span class="label-text">Цена</span>
+                                </div>
+                                <input type="text" name="price" id="price" class="input-bordered" value="{{ old('price', $warehouse->price_for_display) }}">
+                            </label>
+                            @error('price')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- В наличии --}}
+                        <div class="w-full join join-vertical">
+                            {{-- <label class="form-control cursor-pointer" for="in_stock"> --}}
+                            <label class="flex items-center gap-4 mt-2 bg-base-200 rounded-lg cursor-pointer" for="in_stock">
+                                <div class="label">
+                                    <span class="label-text">В наличии</span>
+                                </div>
+                                <input type="hidden" name="in_stock" value="0">
+                                <input type="checkbox" name="in_stock" id="in_stock" value="1" class="checkbox checkbox-success checkbox-lg" {{ old('in_stock', $warehouse->in_stock) ? 'checked' : '' }}>
+                            </label>
+                            @error('in_stock')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Рейтинг --}}
+                        <div class="w-full join join-vertical">
+                            <label class="form-control" for="rating">
+                                <div class="label">
+                                    <span class="label-text">Рейтинг (0–5)</span>
+                                </div>
+                                <input type="text" name="rating" id="rating" class="input-bordered" value="{{ old('rating', $warehouse->rating_for_display) }}">
+                            </label>
+                            @error('rating')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Производитель --}}
+                        <div class="w-full join join-vertical">
+                            <label class="form-control" for="manufacturer_id">
                                 <div class="label">
                                     <span class="label-text">Производитель</span>
                                 </div>
-                                <select class="select-bordered" size="10" name="manufacturer_id">
+                                <select class="select-bordered" name="manufacturer_id">
+                                    <option value="">-- Не выбран --</option>
                                     @foreach($manufacturers as $manufacturer)
-                                    @if ($warehouse->manufacturer_id === $manufacturer->id)
-                                        <option value="{{ $manufacturer->id }}" selected>{{ $manufacturer->name }} ({{ $manufacturer->brand }})</option>
-                                    @else
-                                        <option value="{{ $manufacturer->id }}">{{ $manufacturer->name }} ({{ $manufacturer->brand }})</option>
-                                    @endif
+                                        <option value="{{ $manufacturer->id }}"
+                                            {{ $warehouse->manufacturer_id === $manufacturer->id ? 'selected' : '' }}>
+                                            {{ $manufacturer->name }} ({{ $manufacturer->brand }})
+                                        </option>
                                     @endforeach
                                 </select>
                             </label>
+                            @error('manufacturer_id')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
                         </div>
 
+                        {{-- Поставщик --}}
                         <div class="w-full join join-vertical">
-                            <label class="form-control" for="vendor_name">
+                            <label class="form-control" for="vendor_id">
                                 <div class="label">
                                     <span class="label-text">Поставщик</span>
                                 </div>
-                                <select class="select-bordered" size="10" name="vendor_id">
+                                <select class="select-bordered" name="vendor_id">
+                                    <option value="">-- Не выбран --</option>
                                     @foreach($vendors as $vendor)
-                                    @if ($warehouse->vendor_id === $vendor->id)
-                                        <option value="{{ $vendor->id }}" selected>{{ $vendor->name }}</option>
-                                    @else
-                                        <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
-                                    @endif
+                                        <option value="{{ $vendor->id }}"
+                                            {{ $warehouse->vendor_id === $vendor->id ? 'selected' : '' }}>
+                                            {{ $vendor->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </label>
+                            @error('vendor_id')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
                         </div>
 
+                        {{-- Количество --}}
                         <div class="w-full join join-vertical">
                             <label class="form-control" for="stock_quantity">
                                 <div class="label">
-                                    <span class="label-text{{ $errors->has('comment') ? ' alert alert-error' : '' }}">Количество</span>
+                                    <span class="label-text">Количество</span>
                                 </div>
-                                <input type="text" name="stock_quantity" id="stock_quantity" class="input-bordered" value="{{ $warehouse->stock_quantity }}">
+                                <input type="number" name="stock_quantity" id="stock_quantity" class="input-bordered" value="{{ old('stock_quantity', $warehouse->stock_quantity) }}">
                             </label>
-
-                            @if ($errors->has('stock_quantity'))
-                            <div role="alert" class="alert alert-error py-2 rounded-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                <span>{{ $errors->first('stock_quantity') }}</span>
-                            </div>
-                            @endif
+                            @error('stock_quantity')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="mb-4 w-full join join-vertical">
+
+                        {{-- Комментарий --}}
+                        <div class="w-full join join-vertical">
                             <label class="form-control" for="comment">
                                 <div class="label">
                                     <span class="label-text">Комментарий</span>
                                 </div>
-                                <input type="text" name="comment" id="comment" class="input-bordered" value="{{ $warehouse->comment }}">
+                                <input type="text" name="comment" id="comment" class="input-bordered" value="{{ old('comment', $warehouse->comment) }}">
                             </label>
-
-                            @if ($errors->has('comment'))
-                            <div role="alert" class="alert alert-error py-2 rounded-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                <span>{{ $errors->first('comment') }}</span>
-                            </div>
-                            @endif
+                            @error('comment')
+                                <div class="alert alert-error py-2 rounded-none">{{ $message }}</div>
+                            @enderror
                         </div>
+
                         <br>
-                        <button type="submit" class="btn-orange">Обновить</button>
+                        <button type="submit" class="mt-4 btn-orange">Обновить</button>
                     </form>
                 </div>
             </div>
@@ -101,11 +178,7 @@
             <div class="my-2">
                 Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
             </div>
-
-            @php
-            // debug
-            //throw new ErrorException('Error found');
-            @endphp
         </div>
     </div>
 </x-app-layout>
+

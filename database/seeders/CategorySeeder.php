@@ -2,18 +2,14 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models;
 
-class ManufacturerSeeder extends Seeder
+class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $model = new Models\Manufacturer();
+        $model = new Models\Category();
         $table = $model->getTable();
         $tablePrefix = $model->getConnection()->getTablePrefix();
 
@@ -23,12 +19,12 @@ class ManufacturerSeeder extends Seeder
 
         \DB::statement("
                 INSERT INTO {$tablePrefix}{$table}
-                (id, name, brand, public_brand, created_at, updated_at)
+                (id, name, slug, parent_id, created_at, updated_at, deleted_at)
                 VALUES
-                (1, 'Littelfuse Inc', 'Littelfuse', 'Радиозавод', NOW(), NOW()),
-                (2, 'Coilcraft', 'Coilcraft', 'Радиозавод', NOW(), NOW()),
-                (3, 'Yageo', 'Yageo', 'Радиозавод', NOW(), NOW()),
-                (4, 'Murata', 'Murata', 'Радиозавод', NOW(), NOW())
+                (1, 'Без категории', 'no-category', NULL, NOW(), NOW(), NULL),
+                (2, 'Резисторы', 'resistors', NULL, NOW(), NOW(), NULL),
+                (3, 'Конденсаторы', 'capacitors', NULL, NOW(), NOW(), NULL),
+                (4, 'Чип-резисторы', 'chip-resistors', 2, NOW(), NOW(), NULL)
             ");
 
         \DB::statement("SET FOREIGN_KEY_CHECKS=1;");
