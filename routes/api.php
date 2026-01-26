@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api;
+use App\Http\Controllers\Api\ApiWarehouseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,20 +19,10 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 });
 
-/*
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-*/
 
-Route::controller(Api\WarehouseController::class)->group(function () {
-    Route::get('warehouse', 'index')->name('api.warehouse.index');
-});
+Route::get('/products', [ApiWarehouseController::class, 'index']);
 
 
-Route::controller(Api\WarehouseController::class)->group(function () {
-    Route::get('test', 'test')->name('test.index');
-});
 
 // проверка работы за обратным прокси
 // Route::get('/debug', function (Request $request) {

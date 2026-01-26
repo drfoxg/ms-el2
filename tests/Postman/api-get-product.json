@@ -1,0 +1,137 @@
+{
+    "info": {
+        "name": "MS-EL Products API",
+        "_postman_id": "8f7d9c0c-1234-4567-890a-abcdef123456",
+        "description": "Коллекция GET /api/products с фильтрами, сортировкой и пагинацией",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get all products",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/products",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"]
+                }
+            }
+        },
+        {
+            "name": "Search by name (q)",
+            "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/products?q=ssd",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"],
+                    "query": [{ "key": "q", "value": "ssd" }]
+                }
+            }
+        },
+        {
+            "name": "Filter by price range",
+            "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/products?price_from=50&price_to=200",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"],
+                    "query": [
+                        { "key": "price_from", "value": "50" },
+                        { "key": "price_to", "value": "200" }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Filter by category",
+            "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/products?category_id=3",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"],
+                    "query": [{ "key": "category_id", "value": "3" }]
+                }
+            }
+        },
+        {
+            "name": "Filter by in_stock",
+            "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/products?in_stock=true",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"],
+                    "query": [{ "key": "in_stock", "value": "true" }]
+                }
+            }
+        },
+        {
+            "name": "Filter by rating_from",
+            "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/products?rating_from=4",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"],
+                    "query": [{ "key": "rating_from", "value": "4" }]
+                }
+            }
+        },
+        {
+            "name": "Sorting examples",
+            "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/products?sort=price_asc",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"],
+                    "query": [{ "key": "sort", "value": "price_asc" }]
+                }
+            }
+        },
+        {
+            "name": "Combined filters + sorting + pagination",
+            "request": {
+                "method": "GET",
+                "header": [{ "key": "Accept", "value": "application/json" }],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/products?q=ssd&price_from=50&price_to=200&in_stock=true&rating_from=4&sort=price_asc&per_page=20",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"],
+                    "query": [
+                        { "key": "q", "value": "ssd" },
+                        { "key": "price_from", "value": "50" },
+                        { "key": "price_to", "value": "200" },
+                        { "key": "in_stock", "value": "true" },
+                        { "key": "rating_from", "value": "4" },
+                        { "key": "sort", "value": "price_asc" },
+                        { "key": "per_page", "value": "20" }
+                    ]
+                }
+            }
+        }
+    ]
+}
