@@ -54,16 +54,43 @@
                                     <td class="whitespace-nowrap px-6 py-4">{{$tag->email}}</td>
                                     <td scope="col" class="px-6 py-4">{{$tag->is_admin}}</td>
                                     @can('create', App\Models\User::class)
-                                    <td class="whitespace-nowrap px-6 py-4">
-                                        <div class="flex">
-                                            <a class="btn-orange mr-2" href="{{ route('dashboard.edit', $tag->id) }}">{{ __('Edit') }}</a>
-                                            <form action="{{ route('dashboard.destroy', $tag->id) }}" method="post">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn-red">{{ __('Delete') }}</button>
-                                            </form>
-                                        </div>
-                                    </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div class="flex gap-4">
+                                                <a
+                                                    href="{{ route('dashboard.edit', $tag->id) }}"
+                                                    class="inline-flex items-center justify-center
+                                                        w-6 h-6 rounded-md
+                                                        text-orange-500 hover:text-white
+                                                        hover:bg-orange-500
+                                                        transition"
+                                                    aria-label="{{ __('Edit') }}"
+                                                    title="{{ __('Edit') }}"
+                                                >
+                                                    <x-icon name="edit" class="w-6 h-6" />
+                                                </a>
+                                                <form action="{{ route('dashboard.destroy', $tag->id) }}"
+                                                    method="post"
+                                                    onsubmit="return confirm('{{ __('Delete this item?') }}')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button
+                                                        type="submit"
+                                                        class="inline-flex items-center justify-center
+                                                            w-6 h-6 rounded-md
+                                                            text-red-500 hover:text-white
+                                                            transition
+                                                            focus:outline-none focus:ring-2 focus:ring-red-400"
+                                                        aria-label="{{ __('Delete') }}"
+                                                        title="{{ __('Delete') }}"
+                                                    >
+                                                        <x-icon
+                                                            name="delete"
+                                                            class="w-6 h-6"
+                                                        />
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     @endcan
                                 </tr>
                                 @endforeach

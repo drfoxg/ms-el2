@@ -77,13 +77,39 @@
                                         {{-- <td class="whitespace-nowrap px-6 py-4">{{ $tag->comment }}</td> --}}
                                         @auth
                                         <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="flex">
-                                                <a class="btn-orange mr-2" href="{{ route('warehouse.edit', $tag->id) }}">{{ __('Edit') }}</a>
+                                            <div class="flex gap-4">
+                                                <a
+                                                    href="{{ route('warehouse.edit', $tag->id) }}"
+                                                    class="inline-flex items-center justify-center
+                                                        w-6 h-6 rounded-md
+                                                        text-orange-500 hover:text-white
+                                                        hover:bg-orange-500
+                                                        transition"
+                                                    aria-label="{{ __('Edit') }}"
+                                                    title="{{ __('Edit') }}"
+                                                >
+                                                    <x-icon name="edit" class="w-6 h-6" />
+                                                </a>
                                                 <form action="{{ route('warehouse.destroy', $tag->id) }}"
-                                                    method="post">
+                                                    method="post"
+                                                    onsubmit="return confirm('{{ __('Delete this item?') }}')">
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="submit" class="btn-red">{{ __('Delete') }}</button>
+                                                    <button
+                                                        type="submit"
+                                                        class="inline-flex items-center justify-center
+                                                            w-6 h-6 rounded-md
+                                                            text-red-500 hover:text-white
+                                                            transition
+                                                            focus:outline-none focus:ring-2 focus:ring-red-400"
+                                                        aria-label="{{ __('Delete') }}"
+                                                        title="{{ __('Delete') }}"
+                                                    >
+                                                        <x-icon
+                                                            name="delete"
+                                                            class="w-6 h-6"
+                                                        />
+                                                    </button>
                                                 </form>
                                             </div>
                                         </td>
