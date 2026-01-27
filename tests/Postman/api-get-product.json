@@ -25,6 +25,24 @@
             }
         },
         {
+            "name": "Get all products FAST",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "https://ms-el.sulfurfun.ru/api/fast/products",
+                    "protocol": "https",
+                    "host": ["ms-el", "sulfurfun", "ru"],
+                    "path": ["api", "products"]
+                }
+            }
+        },
+        {
             "name": "Search by name (q)",
             "request": {
                 "method": "GET",

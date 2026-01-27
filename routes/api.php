@@ -17,7 +17,7 @@ use App\Http\Controllers\Api\ApiWarehouseController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-});
+})->middleware('throttle:60,1');
 
 
 Route::get('/products', [ApiWarehouseController::class, 'index']);
