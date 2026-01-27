@@ -12,7 +12,9 @@ use Symfony\Component\CssSelector\XPath\Extension\FunctionExtension;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -48,36 +50,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected function isAdmin(): Attribute
     {
-
-        //dd('isAdmin');
-
         return Attribute::make(
             get: fn (string $value) => $this->getIsAdmin($value),
             set: fn ($value) => $this->setIsAdmin($value),
         );
     }
 
-    private function getIsAdmin(string $value)
+    // is_admin nullable в БД
+    private function getIsAdmin(?string $value)
     {
-        if ($value) {
-            $value = 'Admin';
-        } else {
-            $value = 'User';
-        }
-
-        return $value;
+        return $value ? 'Admin' : 'User';
     }
 
     private function setIsAdmin($value)
     {
-        //dd($value);
-
-        if ($value == 'on' || $value = 1) {
-            $value = 1;
-        } else {
-            $value = 0;
-        }
-
-        return $value;
+        return $value === 'on' || $value === 1 || $value === '1' ? 1 : 0;
     }
 }

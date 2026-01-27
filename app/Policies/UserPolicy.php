@@ -17,32 +17,18 @@ class UserPolicy
         //
     }
 
-    public function create(User $user)
+    public function create(User $user): bool
     {
-        //dd($user);
-
-        if (isset($user->is_admin) && $user->is_admin === "Admin") {
-            return true;
-        } else {
-            return false;
-        }
+        return $user->is_admin === "Admin";
     }
 
-    public function update(User $user)
+    public function update(User $user): bool
     {
-        if (isset($user->is_admin) && $user->is_admin === "Admin") {
-            return true;
-        } else {
-            return false;
-        }
+        return $user->is_admin === "Admin";
     }
 
-    public function delete(User $user)
+    public function delete(User $user): bool
     {
-        if (isset($user->is_admin) && $user->is_admin === "Admin") {
-            return true;
-        } else {
-            return false;
-        }
+        return $user->is_admin === "Admin";
     }
 }

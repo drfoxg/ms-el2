@@ -14,6 +14,9 @@ class Vendor extends Model
 
     //protected $with = ['vendor', 'vendor.parent'];
 
+    /**
+     * @return HasMany<\App\Models\Warehouse>
+     */
     public function vendors(): HasMany
     {
         return $this->hasMany(Warehouse::class);
