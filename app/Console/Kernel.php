@@ -13,6 +13,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+
+        $schedule->command('exports:clean --days=1')
+            ->dailyAt('03:00')
+            //->everyMinute() // debug
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/exports-clean.log'));
     }
 
     /**

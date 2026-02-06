@@ -52,6 +52,8 @@ services:
         image: ms-el2/php
         container_name: ms-el2-scheduler
         restart: unless-stopped
+        environment:
+            TZ: Europe/Moscow
         working_dir: /var/www
         command: >
             bash -c "while true; do
@@ -64,7 +66,7 @@ services:
         networks:
             - app-ms-el2-network
         depends_on:
-            - app-ms-el2
+            - ms-el2
 
     #Nginx Service
     ms-el2-webserver:
