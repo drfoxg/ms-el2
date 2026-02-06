@@ -48,6 +48,24 @@ services:
             - ms-el2 # service name, а не container_name: app-ms-el2
             - redis # как бы ни назывался ваш redis-сервис в docker-compose
 
+    scheduler:
+        image: ms-el2/php
+        container_name: ms-el2-scheduler
+        restart: unless-stopped
+        working_dir: /var/www
+        command: >
+            bash -c "while true; do
+                php artisan schedule:run --verbose;
+                sleep 60;
+            done"
+        volumes:
+            - ./:/var/www
+            - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - app-ms-el2-network
+        depends_on:
+            - app-ms-el2
+
     #Nginx Service
     ms-el2-webserver:
         image: nginx:alpine
