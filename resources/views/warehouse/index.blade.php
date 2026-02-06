@@ -166,7 +166,8 @@
          Модальное окно экспорта товаров
          ═══════════════════════════════════════════════ --}}
     <x-modal name="export-warehouse" maxWidth="md">
-        <div class="p-6" x-data="warehouseExport()" x-cloak>
+        {{-- <div class="p-6" x-data="warehouseExport()"> --}}
+        <div class="p-6" x-data="warehouseExport">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Экспорт товаров в CSV
             </h3>
@@ -205,7 +206,7 @@
                     {{-- Прогресс-бар --}}
                     <div class="w-full bg-gray-200 rounded h-4 mb-2 overflow-hidden">
                         <div
-                            class="bg-orange-400 h-4 rounded transition-all duration-300 ease-out"
+                            class="bg-orange-400 h-4 w-0 rounded transition-all duration-300 ease-out"
                             :style="'width: ' + percent + '%'"
                         ></div>
                     </div>
@@ -266,20 +267,29 @@
     {{-- Скрипт Alpine-компонента --}}
     <x-slot name="footerScript">
         <script>
-            function warehouseExport() {
-                return {
-                    status: 'idle',        // idle | processing | ready | error
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('warehouseExport', () => ({
+                    status: 'idle',
                     exportId: null,
                     percent: 0,
                     downloadUrl: null,
                     errorMessage: '',
                     pollTimer: null,
 
+                    init() {
+                        // При загрузке — проверяем, есть ли незавершённый экспорт
+                        const savedId = sessionStorage.getItem('warehouse_export_id');
+                        if (savedId) {
+                            this.exportId = savedId;
+                            this.status = 'processing';
+                            this.$dispatch('open-modal', 'export-warehouse');
+                            this.pollProgress();
+                        }
+                    },
+
                     startExport() {
                         this.status = 'processing';
                         this.percent = 0;
-                        this.downloadUrl = null;
-                        this.errorMessage = '';
 
                         fetch('{{ route("warehouse.export.start") }}', {
                             method: 'POST',
@@ -295,11 +305,12 @@
                         })
                         .then(data => {
                             this.exportId = data.export_id;
+                            sessionStorage.setItem('warehouse_export_id', data.export_id);
                             this.pollProgress();
                         })
                         .catch(err => {
                             this.status = 'error';
-                            this.errorMessage = err.message || 'Не удалось запустить экспорт';
+                            this.errorMessage = err.message;
                         });
                     },
 
@@ -309,9 +320,7 @@
                         const url = '{{ route("warehouse.export.progress", ":id") }}'
                             .replace(':id', this.exportId);
 
-                        fetch(url, {
-                            headers: { 'Accept': 'application/json' },
-                        })
+                        fetch(url, { headers: { 'Accept': 'application/json' } })
                         .then(res => {
                             if (!res.ok) throw new Error('Ошибка получения прогресса');
                             return res.json();
@@ -319,29 +328,43 @@
                         .then(data => {
                             this.percent = data.percent;
 
+                            if (data.status === 'unknown') {
+                                // Экспорт протух в кэше — очищаем
+                                this.cleanup();
+                                this.status = 'error';
+                                this.errorMessage = 'Экспорт устарел, запустите заново';
+                                return;
+                            }
+
                             if (data.ready && data.download_url) {
                                 this.status = 'ready';
                                 this.downloadUrl = data.download_url;
+                                sessionStorage.removeItem('warehouse_export_id');
                             } else {
                                 this.pollTimer = setTimeout(() => this.pollProgress(), 500);
                             }
                         })
                         .catch(err => {
                             this.status = 'error';
-                            this.errorMessage = err.message || 'Ошибка при получении прогресса';
+                            this.errorMessage = err.message;
                         });
                     },
 
                     reset() {
                         if (this.pollTimer) clearTimeout(this.pollTimer);
+                        this.cleanup();
                         this.status = 'idle';
-                        this.exportId = null;
                         this.percent = 0;
                         this.downloadUrl = null;
                         this.errorMessage = '';
                     },
-                };
-            }
+
+                    cleanup() {
+                        sessionStorage.removeItem('warehouse_export_id');
+                        this.exportId = null;
+                    },
+                }));
+            });
         </script>
     </x-slot>
 </x-app-layout>

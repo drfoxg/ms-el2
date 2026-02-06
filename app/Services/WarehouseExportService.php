@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Сервис экспорта товаров склада в CSV.
@@ -22,11 +23,11 @@ class WarehouseExportService
     /** Префикс ключей кэша */
     private const CACHE_PREFIX = 'warehouse_export_';
 
-    /** Время жизни ключей кэша (минуты) */
-    private const CACHE_TTL = 60;
+    /** Время жизни ключей кэша в секундах */
+    private const CACHE_TTL = 300;
 
     /** Размер пачки для обновления прогресса */
-    private const BATCH_SIZE = 500;
+    private const BATCH_SIZE = 5000;
 
     /** Диск для хранения экспортов */
     private const STORAGE_DISK = 'public';
@@ -128,6 +129,9 @@ class WarehouseExportService
 
                     $processed++;
                 }
+
+                // Логируем память после каждого чанка
+                Log::debug('Export memory: ' . round(memory_get_usage(true) / 1024 / 1024, 1) . ' MB');
 
                 // Обновляем прогресс после каждой пачки
                 Cache::put($this->key($exportId, 'progress'), $processed, self::CACHE_TTL);
