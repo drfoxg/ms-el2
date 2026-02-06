@@ -2,7 +2,7 @@
     "version": "0.2",
     "ignorePaths": [
         "./composer.json",
-        "package.json",
+        "package.json"
     ],
     "dictionaryDefinitions": [],
     "dictionaries": [],
@@ -16,6 +16,7 @@
         "воркера",
         "деприкации",
         "конфигов",
+        "Логируем",
         "Неавторизован",
         "проксирует",
         "сериализации",
@@ -24,6 +25,7 @@
         "фуллстек",
         "хелперов",
         "Хуинский",
+        "чанка",
         "экшены",
         "alexwestergaard",
         "analyse",
@@ -80,6 +82,7 @@
         "rapide",
         "rdkafka",
         "spreadsheetml",
+        "sqldev",
         "stackoverflow",
         "sulfurfun",
         "symfony",

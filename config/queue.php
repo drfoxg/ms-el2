@@ -66,7 +66,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => env('REDIS_QUEUE_CONNECTION', 'default'),
-            'retry_after' => 90,
+            'retry_after' => 310, // больше чем таймаут в job
             'block_for' => null,
             'after_commit' => false,
         ],

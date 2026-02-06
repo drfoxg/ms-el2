@@ -27,10 +27,65 @@ services:
             #- 217.114.43.138:2222:22
             # vite node.js server
             - 217.114.43.138:5173:5173
+
     # Worker Service for Redis
-    worker:
+    worker-1:
         image: ms-el2/php # ← тот же образ
-        container_name: worker-ms-el2
+        container_name: worker-ms-el2-1
+        restart: unless-stopped
+        working_dir: /var/www
+        command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+        volumes:
+            - ./:/var/www
+            - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - app-ms-el2-network # ← те же сети, что у app
+            - sqldev-backend
+        depends_on:
+            - ms-el2 # service name, а не container_name: app-ms-el2
+            - redis # как бы ни назывался ваш redis-сервис в docker-compose
+
+    # Worker Service for Redis
+    # docker-compose up -d --scale worker=2
+    worker-2:
+        image: ms-el2/php # ← тот же образ
+        container_name: worker-ms-el2-2
+        restart: unless-stopped
+        working_dir: /var/www
+        command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+        volumes:
+            - ./:/var/www
+            - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - app-ms-el2-network # ← те же сети, что у app
+            - sqldev-backend
+        depends_on:
+            - ms-el2 # service name, а не container_name: app-ms-el2
+            - redis # как бы ни назывался ваш redis-сервис в docker-compose
+
+    # Worker Service for Redis
+    # docker-compose up -d --scale worker=3
+    worker-3:
+        image: ms-el2/php # ← тот же образ
+        container_name: worker-ms-el2-3
+        restart: unless-stopped
+        working_dir: /var/www
+        command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+        volumes:
+            - ./:/var/www
+            - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - app-ms-el2-network # ← те же сети, что у app
+            - sqldev-backend
+        depends_on:
+            - ms-el2 # service name, а не container_name: app-ms-el2
+            - redis # как бы ни назывался ваш redis-сервис в docker-compose
+
+    # Worker Service for Redis
+    # docker-compose up -d --scale worker=4
+    worker-4:
+        image: ms-el2/php # ← тот же образ
+        container_name: worker-ms-el2-4
         restart: unless-stopped
         working_dir: /var/www
         command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
