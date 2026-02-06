@@ -13,6 +13,7 @@
         "kaltura/api-client-library": "^19.4",
         "laravel-lang/locale-list": "^1.1",
         "laravel/framework": "^10.10",
+        "laravel/horizon": "^5.43",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "^3.1",
