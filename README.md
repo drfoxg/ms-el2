@@ -20,12 +20,15 @@ tests/Postman/api-get-product.json
 - REST API
 - Auth + Policies
 - Throttling API
+- Redis queue
+- Redis cache
 
 ---
 
 ## Основной функционал
 
 ### Web (Backoffice)
+
 - Авторизация пользователей
 - Управление пользователями (CRUD, policies)
 - Управление складами (Warehouse)
@@ -33,8 +36,39 @@ tests/Postman/api-get-product.json
 - Производители и вендоры
 - Смена локали
 - Защищённый доступ к админке
+- Асинхронная отдача CSV и фоновая очистка диска от файлов экспорта
+    - Стандартный запуск — удалить csv старше 1 дня из exports/
+
+    ```bash
+    php artisan exports:clean
+    ```
+
+    - Посмотреть что удалится, без удаления
+
+    ```bash
+    php artisan exports:clean --dry-run
+    ```
+
+    - Удалить xlsx файлы старше 7 дней
+
+    ```bash
+    php artisan exports:clean exports xlsx --days=7
+    ```
+
+    - Короткий флаг dry-run
+
+    ```bash
+    php artisan exports:clean -D
+    ```
+
+    - Другая папка
+
+    ```bash
+    php artisan exports:clean reports csv --days=30
+    ```
 
 ### API (для фронта / Тильды)
+
 - Получение списка товаров
 - Фильтрация
 - Сортировка
