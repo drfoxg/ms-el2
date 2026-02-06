@@ -8,6 +8,7 @@ use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WarehouseExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,10 @@ Route::controller(UserController::class)->group(function () {
 Route::resource('vendors', VendorController::class)->names('vendor');
 Route::resource('manufacturer', ManufacturerController::class);//->middleware('guest');
 Route::controller(WarehouseController::class)->group(function () {
+    Route::post('/warehouse/export', [WarehouseExportController::class, 'start'])
+        ->name('warehouse.export.start');
+    Route::get('/warehouse/export/{exportId}', [WarehouseExportController::class, 'progress'])
+        ->name('warehouse.export.progress');
 
     Route::get('removeall', 'removeall')->name('warehouse.removeall');
     Route::get('tmpdownload', 'tmpdownload')->name('warehouse.tmpdownload');
